@@ -60,7 +60,7 @@ data oci_core_services core_services {
 }
 
 locals {
-  all_services_id = [for service in data.oci_limits_limit_values.ad_limits : service.id if contains(service, "Services In Oracle Services Network") && contains(service, "All")]
+  all_services_id = [for service in data.oci_core_services.core_services.services : service.id if contains(service, "Services In Oracle Services Network") && contains(service, "All")]
 }
 
 resource oci_core_service_gateway service_gateway {
