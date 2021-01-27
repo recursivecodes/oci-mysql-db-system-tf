@@ -65,7 +65,7 @@ resource oci_core_service_gateway service_gateway {
   display_name = "Service Gateway MySQL VCN"
   freeform_tags = {}
   services {
-    service_id = data.oci_core_services core_services.core_services[0].id
+    service_id = data.oci_core_services.core_services.core_services[0].id
   }
   vcn_id = oci_core_vcn.vcn.id
 }
