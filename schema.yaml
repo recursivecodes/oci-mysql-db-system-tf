@@ -1,0 +1,148 @@
+title: "MySQL DB System with VCN and optional bastion host"
+stackDescription: "Deploys a MySQL DB System, configured VCN and an optional bastion host for DB system connectivity."
+schemaVersion: 1.1.0
+version: "20200301"
+locale: "en"
+
+variableGroups:
+- title: ${Messages.solutionsHub.requiredConfig()}
+  visible: true  
+  variables:
+  - region
+  - compartment_ocid
+  - admin_username
+  - admin_password
+  - mysql_shape
+  - mysql_db_name
+  - vcn_name
+  - mysql_db_size
+  - availability_domain
+  - use_bastion_host
+  - ssh_public_key
+  - shape
+  - image_id
+
+- title: ${Messages.solutionsHub.optionalConfig()}
+  visible: false  
+  variables:
+
+variables:
+  region:
+    type: oci:identity:region:name
+    visible: true
+    required: true
+    title: ${Messages.solutionsHub.genericVariables.region.title()}
+    description: ${Messages.solutionsHub.genericVariables.region.description()}
+  
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    visible: true
+    required: true
+    title: "Compartment"
+    description: "The compartment to create the resources in."
+  
+  admin_username:
+    visible: true
+    required: true
+    title: "MySQL Admin Username"
+    description: "The username for your MySQL DB System."
+  
+  admin_password:
+    type: password
+    confirmation: true
+    visible: true
+    required: true
+    pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,32}$"
+    schema: "foo"
+    name: "name"
+    error: "error"
+    title: "MySQL Admin Password"
+    description: "The password for your MySQL admin user. Must be between 8 and 32 characters, and contain at least 1 uppercase, 1 lowercase, 1 numeric, and 1 special characters."
+
+  mysql_shape:
+    type: enum
+    title: "MySQL DB System Shape"
+    default: "MySQL.VM.Standard.E3.1.8GB"
+    enum:
+      - VM.Standard.E2.1
+      - VM.Standard.E2.2
+      - VM.Standard.E2.4
+      - VM.Standard.E2.8
+      - MySQL.VM.Standard.E3.1.8GB
+      - MySQL.VM.Standard.E3.1.16GB
+      - MySQL.VM.Standard.E3.2.32GB
+      - MySQL.VM.Standard.E3.4.64GB
+      - MySQL.VM.Standard.E3.8.128GB
+      - MySQL.VM.Standard.E3.16.256GB
+      - MySQL.VM.Standard.E3.24.384GB
+      - MySQL.VM.Standard.E3.32.512GB
+      - MySQL.VM.Standard.E3.48.768GB
+      - MySQL.VM.Standard.E3.64.1024GB
+      - MySQL.HeatWave.VM.Standard.E3
+
+  mysql_db_name:
+    type: string
+    required: true
+    default: "mysql-db"
+    title: "MySQL DB System Name"
+
+  vcn_name:
+    type: string
+    required: true
+    default: "mysql-virtual-cloud-network"
+    title: "Virtual Cloud Network (VCN) Name"
+
+  mysql_db_size:
+    type: integer
+    required: true
+    default: 50
+    title: "MySQL DB Size (in GB)"
+
+  use_bastion_host:
+    type: boolean
+    visible: true
+    required: false
+    default: false
+    title: "Create a bastion host?"
+    description: "Do you want to create a bastion host for this deployment?"
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    visible: use_bastion_host
+    additionalProps:
+      allowMultiple: true
+    required: true
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+    title: "Bastion Host SSH Public Key"
+    description: "Public SSH key to be included in the ~/.ssh/authorized_keys file for the default user on the bastion host."
+
+  shape:
+    type: oci:core:instanceshape:name
+    visible: use_bastion_host
+    required: true
+    title: Bastion Host Instance Shape
+    default: "VM.Standard.B1.1"
+    description: ${Messages.solutionsHub.solutions.computeInstance.variables.shape.description()}
+    dependsOn:
+      compartmentId: tenancy_ocid
+
+  image_id:
+    type: oci:core:image:id
+    visible: use_bastion_host
+    required: true
+    title: "Bastion Host Image"
+    description: "The type of image to be used for your bastion host."
+    dependsOn:
+      compartmentId: tenancy_ocid
+  
+  availability_domain:
+    type: oci:identity:availabilitydomain:name
+    visible: true
+    required: true
+    title: "Availability Domain"
+    description: "The AD to be used for your MySQL DB System (and bastion host, if created)."
+    dependsOn:
+      compartmentId: compartment_ocid
+
+  tenancy_ocid:
+    visible: false
