@@ -60,7 +60,7 @@ data oci_core_services core_services {
 }
 
 locals {
-  all_services_id = [for service in data.oci_core_services.core_services.services : service.id if contains(service, "Services In Oracle Services Network") && contains(service, "All")]
+  all_services = [for service in data.oci_core_services.core_services.services : service if contains(regexall("All.*?",service.name), "All") && contains(regexall("Services In Oracle Services Network",service.name), "Services In Oracle Services Network")]
 }
 
 resource oci_core_service_gateway service_gateway {
@@ -69,7 +69,7 @@ resource oci_core_service_gateway service_gateway {
   display_name = "Service Gateway MySQL VCN"
   freeform_tags = {}
   services {
-    service_id = local.all_services_id[0]
+    service_id = local.all_services[0].id
   }
   vcn_id = oci_core_vcn.vcn.id
 }
