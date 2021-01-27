@@ -55,12 +55,18 @@ resource oci_core_internet_gateway internet_gateway {
   vcn_id = oci_core_vcn.vcn.id
 }
 
+data oci_core_services core_services {
+
+}
+
 resource oci_core_service_gateway service_gateway {
   compartment_id = var.compartment_ocid
   defined_tags = {}
   display_name = "Service Gateway MySQL VCN"
   freeform_tags = {}
-  services {}
+  services {
+    service_id = data.oci_core_services core_services.core_services[0].id
+  }
   vcn_id = oci_core_vcn.vcn.id
 }
 
