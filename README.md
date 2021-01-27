@@ -9,4 +9,4 @@ For more information, please see: [TODO: add blog post link].
 (https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)
 ]
 (https://cloud.oracle.com/resourcemanager/stacks/create
-?zipUrl=<package-url>)
+?zipUrl=https://github.com/recursivecodes/oci-mysql-db-system-tf/releases/latest/download/stack.zip)
