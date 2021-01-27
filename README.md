@@ -4,9 +4,5 @@ This project contains a set of scripts to be used with the Oracle Cloud Infrastr
 
 For more information, please see: [TODO: add blog post link].
 
-[
-![Deploy to Oracle Cloud]
-(https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)
-]
-(https://cloud.oracle.com/resourcemanager/stacks/create
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create
 ?zipUrl=https://github.com/recursivecodes/oci-mysql-db-system-tf/releases/latest/download/stack.zip)
