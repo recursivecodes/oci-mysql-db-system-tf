@@ -59,13 +59,17 @@ data oci_core_services core_services {
 
 }
 
+locals {
+  all_services_id = [for service in data.oci_limits_limit_values.ad_limits : service.id if contains(service, "Services In Oracle Services Network") && contains(service, "All")]
+}
+
 resource oci_core_service_gateway service_gateway {
   compartment_id = var.compartment_ocid
   defined_tags = {}
   display_name = "Service Gateway MySQL VCN"
   freeform_tags = {}
   services {
-    service_id = data.oci_core_services.core_services.services[0].id
+    service_id = local.all_services_id[0]
   }
   vcn_id = oci_core_vcn.vcn.id
 }
